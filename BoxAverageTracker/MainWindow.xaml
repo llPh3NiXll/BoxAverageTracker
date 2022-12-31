@@ -1,0 +1,110 @@
+﻿<Window x:Class="BoxAverageTracker.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BoxAverageTracker"
+        mc:Ignorable="d"
+        x:Name="BoxAverageTrackerWindow"
+        Title="Box Average Tracker" Height="{Binding Path=TotalHeight, Mode=TwoWay}" Width="{Binding Path=TotalWidth, Mode=TwoWay}"
+        Topmost="True" MouseDown="Window_MouseDown" Background="Black"
+        WindowStyle="None"
+        AllowsTransparency="False"
+        ResizeMode="CanResize"
+        UseLayoutRounding="True">
+
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="0" ResizeBorderThickness="10" />
+    </WindowChrome.WindowChrome>
+
+    <Window.Resources>
+        <ContextMenu x:Key="MainMenu">
+            <MenuItem Header="Finish setup" Click="RightClick_EndSetup" IsCheckable="False"/>
+            <MenuItem Header="Counting..." Click="ShowCounting" IsCheckable="False"/>
+            <MenuItem Header="Set font..." Click="SetTextFont" IsCheckable="False"/>
+            <MenuItem Header="Set average font..." Click="SetAverageTextFont" IsCheckable="False"/>
+            <MenuItem Header="Auto display" Click="AutoDisplayClick" IsChecked="{Binding AutoDisplay}" IsCheckable="True"/>
+            <MenuItem Header="Load game" Click="LoadGame" IsCheckable="False"/>
+            <MenuItem Header="Save game" Click="SaveGame" IsCheckable="False"/>
+            <MenuItem Header="Export stats" Click="RightClick_Export" IsCheckable="False"/>
+            <MenuItem Header="About" Click="AboutClick" IsCheckable="False"/>
+            <MenuItem Header="Exit" Click="RightClick_Exit" IsCheckable="False"/>
+        </ContextMenu>
+    </Window.Resources>
+
+    <Viewbox Margin="5">
+        <StackPanel x:Name="ListMaps">
+            <StackPanel>
+                <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch">
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Row="0" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Box hits : " 
+                               FontFamily="{Binding TextFontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontSize="{Binding TextSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               Foreground="{Binding TextForeground, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontWeight="{Binding TextFontWeight, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontStyle="{Binding TextFontStyle, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding BoxHitsCount}"
+                               FontFamily="{Binding TextFontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontSize="{Binding TextSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               Foreground="{Binding TextForeground, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontWeight="{Binding TextFontWeight, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontStyle="{Binding TextFontStyle, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Center" Text="        "
+                               FontFamily="{Binding TextFontFamily, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontSize="{Binding TextSize, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               Foreground="{Binding TextForeground, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontWeight="{Binding TextFontWeight, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                               FontStyle="{Binding TextFontStyle, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                    <TextBlock Grid.Row="0" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding GameConnectedString}"
+                               Foreground="Orange"
+                               FontSize="15"/>
+                </Grid>
+            </StackPanel>
+            <StackPanel>
+                <ItemsControl ItemsSource="{Binding WeaponAverages, UpdateSourceTrigger=PropertyChanged}" VirtualizingPanel.IsVirtualizing="False">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid HorizontalAlignment="Left" VerticalAlignment="Stretch" VirtualizingPanel.IsVirtualizing="False" Margin="0, 0, 0, 1">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Row="1" Grid.Column="1" HorizontalAlignment="Left" VerticalAlignment="Top" Text="{Binding Key}"
+                                           FontFamily="{Binding AverageTextFontFamily, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontSize="{Binding AverageTextSize, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           Foreground="{Binding AverageTextForeground, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontWeight="{Binding AverageTextFontWeight, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontStyle="{Binding AverageTextFontStyle, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Top" Text=" average : "
+                                           FontFamily="{Binding AverageTextFontFamily, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontSize="{Binding AverageTextSize, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           Foreground="{Binding AverageTextForeground, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontWeight="{Binding AverageTextFontWeight, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontStyle="{Binding AverageTextFontStyle, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <TextBlock Grid.Row="1" Grid.Column="3" HorizontalAlignment="Left" VerticalAlignment="Top" Text="{Binding Value, UpdateSourceTrigger=PropertyChanged, StringFormat=N2}"
+                                           FontFamily="{Binding AverageTextFontFamily, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontSize="{Binding AverageTextSize, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           Foreground="{Binding AverageTextForeground, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontWeight="{Binding AverageTextFontWeight, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           FontStyle="{Binding AverageTextFontStyle, ElementName=BoxAverageTrackerWindow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </StackPanel>
+    </Viewbox>
+</Window>

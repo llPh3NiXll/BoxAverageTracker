@@ -1,0 +1,56 @@
+﻿<Window x:Class="BoxAverageTracker.CountWeapons"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BoxAverageTracker"
+        mc:Ignorable="d"
+        Title="Weapons to count" Height="450" Width="400">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Margin="5" Command="{Binding SelectAllToCount}" Content="Count all"/>
+            <Button Grid.Column="1" Margin="5" Command="{Binding SelectNoneToCount}" Content="Count none"/>
+            <Button Grid.Column="2" Margin="5" Command="{Binding SelectAllToDisplay}" Content="Display all"/>
+            <Button Grid.Column="3" Margin="5" Command="{Binding SelectNoneToDisplay}" Content="Display none"/>
+        </Grid>
+
+        <DataGrid Grid.Row="1" ItemsSource="{Binding Weapons}" AutoGenerateColumns="False" VirtualizingPanel.IsVirtualizing="False">
+            <DataGrid.Columns>
+                <DataGridTemplateColumn SortMemberPath="WeaponName" Header="Weapon name" Width="*" CanUserReorder="True" CanUserSort="True" CanUserResize="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding WeaponName}"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Is counting?" CanUserReorder="True" CanUserSort="True" CanUserResize="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsCounting}" Checked="IsCounting_Checked" Unchecked="IsCounting_UnChecked" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <DataGridTemplateColumn Header="Is displayed?" CanUserReorder="True" CanUserSort="True" CanUserResize="True">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <CheckBox IsChecked="{Binding IsDisplayed}" Checked="IsDisplayed_Checked" Unchecked="IsDisplayed_UnChecked" HorizontalAlignment="Center"/>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+            </DataGrid.Columns>
+        </DataGrid>
+    </Grid>
+
+</Window>
