@@ -596,6 +596,7 @@ namespace BoxAverageTracker
                     if (count <= 0)
                     {
                         processes = Process.GetProcessesByName("BGamerT5");
+                        count = processes.Length;
                     }
 
                     if (m_BlackOpsProcess != null && count <= 0)
