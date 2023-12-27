@@ -379,137 +379,140 @@ namespace BoxAverageTracker
                                     {
                                         UpdateAmmos();
                                     }
-
-                                    if (whiteHasHit || blueHasHit || yellowHasHit || greenHasHit)
+                                    else
                                     {
-                                        if (!inventoryHasChanged && !ammoBought)
+                                        if (whiteHasHit || blueHasHit || yellowHasHit || greenHasHit)
                                         {
-                                            SetBoxHits(GetBoxHits() + 1);
-                                            isBoxRandomizing = true;
-                                            timeSinceLastRandom = 0;
+                                            if (!inventoryHasChanged && !ammoBought)
+                                            {
+                                                SetBoxHits(GetBoxHits() + 1);
+                                                isBoxRandomizing = true;
+                                                timeSinceLastRandom = 0;
 
-                                            m_WhiteTmpInventory = new List<int>(m_WhiteInventory);
-                                            m_BlueTmpInventory = new List<int>(m_BlueInventory);
-                                            m_YellowTmpInventory = new List<int>(m_YellowInventory);
-                                            m_GreenTmpInventory = new List<int>(m_GreenInventory);
+                                                m_WhiteTmpInventory = new List<int>(m_WhiteInventory);
+                                                m_BlueTmpInventory = new List<int>(m_BlueInventory);
+                                                m_YellowTmpInventory = new List<int>(m_YellowInventory);
+                                                m_GreenTmpInventory = new List<int>(m_GreenInventory);
+                                                if (m_SetupDone)
+                                                {
+                                                    AddBoxHitForEachWeapon(whiteHasHit, blueHasHit, yellowHasHit, greenHasHit);
+                                                }
+                                            }
+                                            mustUpdate = true;
+                                        }
+
+                                        if (HasGottenTeddyBear(whitePreviousPoints, whitePointsCount, whitePreviousKills, whiteKillsCount, whitePreviousRevives, whiteRevivesCount) ||
+                                            HasGottenTeddyBear(bluePreviousPoints, bluePointsCount, bluePreviousKills, blueKillsCount, bluePreviousRevives, blueRevivesCount) ||
+                                            HasGottenTeddyBear(yellowPreviousPoints, yellowPointsCount, yellowPreviousKills, yellowKillsCount, yellowPreviousRevives, yellowRevivesCount) ||
+                                            HasGottenTeddyBear(greenPreviousPoints, greenPointsCount, greenPreviousKills, greenKillsCount, greenPreviousRevives, greenRevivesCount) &&
+                                            m_SetupDone)
+                                        {
+                                            if (!m_WeaponsToNotCount.Any(x => x == "Teddy bear"))
+                                            {
+                                                m_WeaponsGotten["Teddy bear"].Add(GetBoxHits());
+                                                mustUpdate = true;
+                                            }
+                                        }
+
+                                        //if (hasMoonBoxMoved)
+                                        //{
+                                        //    if (!m_WeaponsToNotCount.Any(x => x == "Teddy bear"))
+                                        //    {
+                                        //        m_WeaponsGotten["Teddy bear"].Add(GetBoxHits());
+                                        //        mustUpdate = true;
+                                        //    }
+                                        //}
+
+                                        if (inventoryHasChanged)
+                                        {
                                             if (m_SetupDone)
                                             {
-                                                AddBoxHitForEachWeapon(whiteHasHit, blueHasHit, yellowHasHit, greenHasHit);
-                                            }
-                                        }
-                                        mustUpdate = true;
-                                    }
-
-                                    if (HasGottenTeddyBear(whitePreviousPoints, whitePointsCount, whitePreviousKills, whiteKillsCount, whitePreviousRevives, whiteRevivesCount) ||
-                                        HasGottenTeddyBear(bluePreviousPoints, bluePointsCount, bluePreviousKills, blueKillsCount, bluePreviousRevives, blueRevivesCount) ||
-                                        HasGottenTeddyBear(yellowPreviousPoints, yellowPointsCount, yellowPreviousKills, yellowKillsCount, yellowPreviousRevives, yellowRevivesCount) ||
-                                        HasGottenTeddyBear(greenPreviousPoints, greenPointsCount, greenPreviousKills, greenKillsCount, greenPreviousRevives, greenRevivesCount) &&
-                                        m_SetupDone)
-                                    {
-                                        if (!m_WeaponsToNotCount.Any(x => x == "Teddy bear"))
-                                        {
-                                            m_WeaponsGotten["Teddy bear"].Add(GetBoxHits());
-                                            mustUpdate = true;
-                                        }
-                                    }
-
-                                    //if (hasMoonBoxMoved)
-                                    //{
-                                    //    if (!m_WeaponsToNotCount.Any(x => x == "Teddy bear"))
-                                    //    {
-                                    //        m_WeaponsGotten["Teddy bear"].Add(GetBoxHits());
-                                    //        mustUpdate = true;
-                                    //    }
-                                    //}
-
-                                    if (inventoryHasChanged)
-                                    {
-                                        if (m_SetupDone)
-                                        {
-                                            UpdateChangedWeapon();
-                                            mustUpdate = true;
-                                        }
-                                        UpdateInventories();
-                                    }
-
-                                    if (isBoxRandomizing && timeSinceLastRandom >= 70)
-                                    {
-                                        isBoxRandomizing = false;
-                                        if (m_SetupDone)
-                                        {
-                                            var diffWhiteInventory = m_WhiteTmpInventory.Where(p => !m_WhiteInventory.Any(p2 => p2 == p));
-                                            var diffBlueInventory = m_BlueTmpInventory.Where(p => !m_BlueInventory.Any(p2 => p2 == p));
-                                            var diffYellowInventory = m_YellowTmpInventory.Where(p => !m_YellowInventory.Any(p2 => p2 == p));
-                                            var diffGreenInventory = m_GreenTmpInventory.Where(p => !m_GreenInventory.Any(p2 => p2 == p));
-
-                                            foreach (var diff in diffWhiteInventory)
-                                            {
-                                                AddBoxHitForSpecificWeapon(diff);
+                                                UpdateChangedWeapon();
                                                 mustUpdate = true;
                                             }
-
-                                            foreach (var diff in diffBlueInventory)
-                                            {
-                                                AddBoxHitForSpecificWeapon(diff);
-                                                mustUpdate = true;
-                                            }
-
-                                            foreach (var diff in diffYellowInventory)
-                                            {
-                                                AddBoxHitForSpecificWeapon(diff);
-                                                mustUpdate = true;
-                                            }
-
-                                            foreach (var diff in diffGreenInventory)
-                                            {
-                                                AddBoxHitForSpecificWeapon(diff);
-                                                mustUpdate = true;
-                                            }
+                                            UpdateInventories();
                                         }
-                                        var weaponAverages = WeaponAverages.ToList();
-                                        WeaponAverages = new ObservableCollection<KeyValuePair<string, float>>(weaponAverages);
-                                    }
 
-                                    if (mustUpdate)
-                                    {
-                                        var weaponAverages = WeaponAverages.ToList();
-
-                                        for (int i = 0; i < weaponAverages.Count; ++i)
+                                        if (isBoxRandomizing && timeSinceLastRandom >= 70)
                                         {
-                                            var weapon = weaponAverages[i];
-                                            float divider = (float)m_WeaponsGotten[weapon.Key].Count > 0 ? (float)m_WeaponsGotten[weapon.Key].Count : 1;
-                                            var copyWeapon = new KeyValuePair<string, float>(weapon.Key, ((float)m_WeaponsBoxHits[weapon.Key]) / (float)divider);
-                                            weaponAverages[i] = copyWeapon;
+                                            isBoxRandomizing = false;
+                                            if (m_SetupDone)
+                                            {
+                                                var diffWhiteInventory = m_WhiteTmpInventory.Where(p => !m_WhiteInventory.Any(p2 => p2 == p));
+                                                var diffBlueInventory = m_BlueTmpInventory.Where(p => !m_BlueInventory.Any(p2 => p2 == p));
+                                                var diffYellowInventory = m_YellowTmpInventory.Where(p => !m_YellowInventory.Any(p2 => p2 == p));
+                                                var diffGreenInventory = m_GreenTmpInventory.Where(p => !m_GreenInventory.Any(p2 => p2 == p));
+
+                                                foreach (var diff in diffWhiteInventory)
+                                                {
+                                                    AddBoxHitForSpecificWeapon(diff);
+                                                    mustUpdate = true;
+                                                }
+
+                                                foreach (var diff in diffBlueInventory)
+                                                {
+                                                    AddBoxHitForSpecificWeapon(diff);
+                                                    mustUpdate = true;
+                                                }
+
+                                                foreach (var diff in diffYellowInventory)
+                                                {
+                                                    AddBoxHitForSpecificWeapon(diff);
+                                                    mustUpdate = true;
+                                                }
+
+                                                foreach (var diff in diffGreenInventory)
+                                                {
+                                                    AddBoxHitForSpecificWeapon(diff);
+                                                    mustUpdate = true;
+                                                }
+                                            }
+                                            var weaponAverages = WeaponAverages.ToList();
+                                            WeaponAverages = new ObservableCollection<KeyValuePair<string, float>>(weaponAverages);
                                         }
 
-                                        WeaponAverages = new ObservableCollection<KeyValuePair<string, float>>(weaponAverages);
+                                        if (mustUpdate)
+                                        {
+                                            var weaponAverages = WeaponAverages.ToList();
+
+                                            for (int i = 0; i < weaponAverages.Count; ++i)
+                                            {
+                                                var weapon = weaponAverages[i];
+                                                float divider = (float)m_WeaponsGotten[weapon.Key].Count > 0 ? (float)m_WeaponsGotten[weapon.Key].Count : 1;
+                                                var copyWeapon = new KeyValuePair<string, float>(weapon.Key, ((float)m_WeaponsBoxHits[weapon.Key]) / (float)divider);
+                                                weaponAverages[i] = copyWeapon;
+                                            }
+
+                                            WeaponAverages = new ObservableCollection<KeyValuePair<string, float>>(weaponAverages);
+                                        }
+
+                                        previousTime = timeCount;
+                                        whitePreviousPoints = whitePointsCount;
+                                        whitePreviousKills = whiteKillsCount;
+                                        whitePreviousDowns = whiteDownsCount;
+                                        whitePreviousRevives = whiteRevivesCount;
+
+                                        bluePreviousPoints = bluePointsCount;
+                                        bluePreviousKills = blueKillsCount;
+                                        bluePreviousDowns = blueDownsCount;
+                                        bluePreviousRevives = blueRevivesCount;
+
+                                        yellowPreviousPoints = yellowPointsCount;
+                                        yellowPreviousKills = yellowKillsCount;
+                                        yellowPreviousDowns = yellowDownsCount;
+                                        yellowPreviousRevives = yellowRevivesCount;
+
+                                        greenPreviousPoints = greenPointsCount;
+                                        greenPreviousKills = greenKillsCount;
+                                        greenPreviousDowns = greenDownsCount;
+                                        greenPreviousRevives = greenRevivesCount;
+
+                                        previousMoonTeddy = moonTeddy;
+                                        timeSinceLastRandom++;
+
+                                        UpdateAmmos();
                                     }
 
-                                    previousTime = timeCount;
-                                    whitePreviousPoints = whitePointsCount;
-                                    whitePreviousKills = whiteKillsCount;
-                                    whitePreviousDowns = whiteDownsCount;
-                                    whitePreviousRevives = whiteRevivesCount;
-
-                                    bluePreviousPoints = bluePointsCount;
-                                    bluePreviousKills = blueKillsCount;
-                                    bluePreviousDowns = blueDownsCount;
-                                    bluePreviousRevives = blueRevivesCount;
-
-                                    yellowPreviousPoints = yellowPointsCount;
-                                    yellowPreviousKills = yellowKillsCount;
-                                    yellowPreviousDowns = yellowDownsCount;
-                                    yellowPreviousRevives = yellowRevivesCount;
-
-                                    greenPreviousPoints = greenPointsCount;
-                                    greenPreviousKills = greenKillsCount;
-                                    greenPreviousDowns = greenDownsCount;
-                                    greenPreviousRevives = greenRevivesCount;
-
-                                    previousMoonTeddy = moonTeddy;
-                                    timeSinceLastRandom++;
-
-                                    UpdateAmmos();
                                 }
 
                                 Thread.Sleep(50);
@@ -1809,7 +1812,7 @@ namespace BoxAverageTracker
                 m_WeaponsBoxHits = weaponsHits;
                 m_WeaponsGotten = weaponsGotten;
                 m_SetupDone = bool.Parse(setup);
-                
+
                 var weaponAverages = new ObservableCollection<KeyValuePair<string, float>>();
                 foreach (var wtd in m_WeaponsToDisplay)
                 {
@@ -1916,7 +1919,7 @@ namespace BoxAverageTracker
 
         private void AboutClick(object sender, RoutedEventArgs e)
         {
-            System.Windows.Forms.MessageBox.Show("Version 1.6", "About", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
+            System.Windows.Forms.MessageBox.Show("Version 1.8", "About", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Information);
         }
 
         private void SetAverageTextFont(object sender, RoutedEventArgs e)
